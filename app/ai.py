@@ -1,4 +1,3 @@
-# import the necessary packages
 import time
 import cv2
 import numpy as np
@@ -83,7 +82,7 @@ def yolo_forward(net, LABELS, image, confidence_level, save_image=False):
 
                 # update our list of bounding box coordinates, confidences,
                 # and class IDs
-                boxes.append((x, y, int(width), int(height)))
+                boxes.append([x, y, int(width), int(height)])
                 confidences.append(float(confidence))
                 class_ids.append(class_id)
 
@@ -96,12 +95,11 @@ def yolo_forward(net, LABELS, image, confidence_level, save_image=False):
     print(boxes)
     print(confidences)
     print(idxs)
+    for x in idxs:
+        print(x)
     
     if len(idxs) > 0:
-        # Michael's version - this one only provides 1 label per image.
-        # filtered_idxs = idxs[0]
-        # Pierre Quereuil change on June 29 , 2021 to allow for multiple labels
-        filtered_idxs =  np.concatenate(idxs)
+        filtered_idxs = np.concatenate(idxs)
         print('after NMS, we have these indices')
         print(filtered_idxs)
     else:
@@ -136,7 +134,7 @@ def yolo_save_img(image, class_ids, boxes, labels, confidences, colors, file_pat
         # text = '{}: {:.4f}'.format(labels[i], confidences[i])
         print(text)
 
-        font_scale = 1.3
+        font_scale = 0.9
         # set the rectangle background to white
         rectangle_bgr = color
         # set some text
