@@ -121,11 +121,11 @@ if __name__ == "__main__":
     coding center code
     '''
     # IMPORTANT: change the cocalcx.ai-camp.org to the site where you are editing this file.
-    website_url = 'cocalc6.ai-camp.org'
-    print(f"Try to open\n\n    https://{website_url}" + base_url + '\n\n')
+    # website_url = 'cocalc6.ai-camp.org'
+    # print(f"Try to open\n\n    https://{website_url}" + base_url + '\n\n')
 
     # remove debug=True when deploying it
-    app.run(host = '0.0.0.0', port=port, debug=True)
+    app.run(host = '0.0.0.0', debug=True)
     import sys; sys.exit(0)
 
     '''

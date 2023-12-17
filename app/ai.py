@@ -32,8 +32,13 @@ def yolo_forward(net, LABELS, image, confidence_level, save_image=False):
     (H, W) = image.shape[:2]
 
     # determine only the *output* layer names that we need from YOLO
-    ln = net.getLayerNames()
-    ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+    layer_names = net.getLayerNames()
+    unconnected_layers = net.getUnconnectedOutLayers()
+    # Check if unconnected_layers is a flat array
+    if unconnected_layers.ndim == 1:
+        ln = [layer_names[i - 1] for i in unconnected_layers]
+    else:
+        ln = [layer_names[i[0] - 1] for i in unconnected_layers]
 
     # construct a blob from the input image and then perform a forward
     # pass of the YOLO object detector, giving us our bounding boxes and
@@ -86,22 +91,13 @@ def yolo_forward(net, LABELS, image, confidence_level, save_image=False):
                 confidences.append(float(confidence))
                 class_ids.append(class_id)
 
-    # apply non-maxima suppression to suppress weak, overlapping bounding
-    # boxes
+    # Apply non-maxima suppression to suppress weak, overlapping bounding boxes
     idxs = cv2.dnn.NMSBoxes(boxes, confidences, confidence_level, confidence_level)
-    
-    
-    print(class_ids)
-    print(boxes)
-    print(confidences)
-    print(idxs)
-    for x in idxs:
-        print(x)
-    
+
+    # Convert idxs to a usable format
     if len(idxs) > 0:
-        filtered_idxs = np.concatenate(idxs)
-        print('after NMS, we have these indices')
-        print(filtered_idxs)
+        # Ensure idxs is a list of integers
+        filtered_idxs = [i[0] if isinstance(i, np.ndarray) else i for i in idxs]
     else:
         filtered_idxs = []
     
